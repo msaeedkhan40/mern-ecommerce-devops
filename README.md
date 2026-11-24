@@ -1,71 +1,217 @@
-<div align="center">
-  <h1>🛒 E-Commerce Pro</h1>
-  <p>A Full-Stack MERN Application with Secure Payment Processing</p>
+# E Commerce Pro
 
-  <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white" alt="MongoDB" />
-  <img src="https://img.shields.io/badge/Express.js-404D59?style=for-the-badge" alt="Express" />
-  <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
-  <img src="https://img.shields.io/badge/Node.js-43853D?style=for-the-badge&logo=node.js&logoColor=white" alt="Node.js" />
-  <img src="https://img.shields.io/badge/Redux-593D88?style=for-the-badge&logo=redux&logoColor=white" alt="Redux" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
-</div>
+A full stack MERN e commerce application with Docker based deployment.
 
-<br />
+## Project Overview
 
-**Live Demo:** [E-Commerce Pro on Netlify](https://buildsbysaif-ecommerce-pro.netlify.app/)  
+E Commerce Pro is a responsive e commerce platform built using MongoDB, Express.js, React, and Node.js.
 
+The project includes user authentication, product browsing, shopping cart management, order management, an admin dashboard, and image uploads.
 
-## 📖 Project Overview
+## Technology Stack
 
-This repository contains the source code for **E-Commerce Pro**, a complete, responsive e-commerce platform developed as part of an internship at Navodita Infotech. 
+| Component | Technology |
+|---|---|
+| Frontend | React, Redux Toolkit, Tailwind CSS |
+| Backend | Node.js, Express.js |
+| Database | MongoDB 6.0 |
+| Database ODM | Mongoose |
+| Web Server | NGINX |
+| Containerization | Docker |
+| Container Management | Docker Compose |
+| Authentication | JWT and bcryptjs |
 
-Built on the MERN stack, this project goes beyond a simple CRUD application by implementing real-world features such as persistent cart state management, role-based authorization, and secure payment simulation via the Stripe API.
+## Core Features
 
-## ✨ Core Features
+### Customer Features
 
-### For Users (Client-Facing)
-* **Authentication & Security:** Secure registration and login using JWT (JSON Web Tokens) and bcryptjs for password hashing.
-* **Dynamic Catalog:** Search functionality and category filtering to easily browse products.
-* **Interactive Shopping Cart:** Persistent cart state managed by Redux Toolkit and LocalStorage.
-* **Secure Checkout:** Multi-step checkout flow handling shipping details and Stripe payment processing.
-* **User Dashboard:** Logged-in users can manage their profiles, leave product reviews, and track order history.
+1. User registration and login.
+2. Product browsing and category filtering.
+3. Shopping cart with persistent state.
+4. Shipping information management.
+5. Order history and profile management.
+6. Product reviews.
 
-### For Administrators (Admin Dashboard)
-* **Inventory Management:** Full CRUD capabilities for adding, editing, and deleting products with image upload support.
-* **Order Fulfillment:** Dedicated portal to view customer orders and update delivery statuses.
-* **User Management:** Ability to view the user base and revoke access for non-admin accounts.
+### Admin Features
 
-## 🏗️ Architecture & Data Flow
+1. Product creation, editing, and deletion.
+2. Product image uploads.
+3. Order management.
+4. Customer management.
 
-The application follows a strict separation of concerns utilizing a **RESTful API** architecture:
-* **Frontend (SPA):** Built with React and Tailwind CSS. Redux Toolkit manages global state (cart, user sessions). All API calls are routed through Axios.
-* **Backend (API):** Node.js and Express handle business logic, routing, and token validation via custom middleware.
-* **Database:** MongoDB stores documents (Users, Products, Orders) utilizing Mongoose as the Object Data Modeling (ODM) library.
+### DevOps Features
 
+1. Separate Docker images for frontend and backend.
+2. Multi container application setup using Docker Compose.
+3. NGINX reverse proxy for frontend and backend communication.
+4. MongoDB running inside a Docker container.
+5. Persistent Docker volumes for database data and uploaded images.
+6. Environment variable based secret configuration.
 
-## 🚀 How to Run Locally
+## Application Architecture
 
-To set up and run this project on a local machine, please follow these steps:
+The application runs through three main services:
 
-1.  **Clone the repository:**
-    ```bash
-    git clone [https://github.com/buildsbysaif/mern-ecommerce-project.git](https://github.com/buildsbysaif/mern-ecommerce-project.git)
-    ```
-2.  **Set up Environment Variables:**
-    Create a `.env` file in the `backend` folder and another in the `frontend` folder, then add the required API keys and secrets.
+1. **Frontend:** React application served by NGINX on port 80 inside its container.
+2. **Backend:** Express API running on port 5000 inside its container.
+3. **MongoDB:** Database available internally to the backend through the Docker network.
 
-3.  **Install Backend Dependencies & Start Server:**
-    ```bash
-    cd backend
-    npm install
-    npm run server
-    ```
-4.  **Install Frontend Dependencies & Start Client:**
-    (In a new terminal)
-    ```bash
-    cd frontend
-    npm install
-    npm run dev
-    ```
+NGINX serves the frontend and forwards API requests to the backend.
 
----
+The MongoDB port is not exposed to the host machine.
+
+## Prerequisites
+
+Install the following tools:
+
+1. Git
+2. Docker Engine
+3. Docker Compose plugin
+4. OpenSSL
+
+Verify Docker installation:
+
+```bash
+docker --version
+docker compose version
+```
+
+## Run with Docker Compose
+
+### 1. Clone the repository
+
+```bash
+git clone git@github.com:msaeedkhan40/mern-ecommerce-devops.git
+cd mern-ecommerce-devops
+```
+
+You can also clone using HTTPS:
+
+```bash
+git clone https://github.com/msaeedkhan40/mern-ecommerce-devops.git
+cd mern-ecommerce-devops
+```
+
+### 2. Create the environment file
+
+Create a root `.env` file containing a secure JWT secret:
+
+```bash
+printf "JWT_SECRET=%s\n" "$(openssl rand -hex 32)" > .env
+chmod 600 .env
+```
+
+The `.env` file is excluded from Git to protect secrets.
+
+Required variable:
+
+| Variable | Description |
+|---|---|
+| `JWT_SECRET` | Secret used to sign authentication tokens |
+
+### 3. Build and start the containers
+
+```bash
+docker compose up -d --build
+```
+
+This command builds the frontend and backend images and starts all application services.
+
+### 4. Check container status
+
+```bash
+docker compose ps
+```
+
+The MongoDB service should become healthy, and the backend and frontend should be running.
+
+### 5. Access the application
+
+Open the following address in your browser:
+
+http://localhost:8080
+
+The frontend is served through NGINX, which forwards API requests to the backend.
+
+## Useful Docker Commands
+
+View running services:
+
+```bash
+docker compose ps
+```
+
+View logs from all services:
+
+```bash
+docker compose logs
+```
+
+View backend logs:
+
+```bash
+docker compose logs backend
+```
+
+View MongoDB logs:
+
+```bash
+docker compose logs mongo
+```
+
+Restart services:
+
+```bash
+docker compose restart
+```
+
+Stop the application:
+
+```bash
+docker compose down
+```
+
+Rebuild application images:
+
+```bash
+docker compose up -d --build
+```
+
+## Persistent Data
+
+Docker Compose uses two named volumes:
+
+| Volume | Purpose |
+|---|---|
+| `mongo_data` | Stores MongoDB database files |
+| `backend_uploads` | Stores uploaded product images |
+
+These volumes preserve application data when containers are restarted or removed using `docker compose down`.
+
+**Important:** Avoid `docker compose down -v` unless you intentionally want to delete the persistent volumes and their data.
+
+## Network Configuration
+
+The application uses an internal Docker network for communication between services.
+
+1. Frontend traffic enters through port 8080 on the host.
+2. NGINX forwards `/api/` requests to the backend service.
+3. NGINX forwards `/uploads/` requests to the backend service.
+4. Backend communicates with MongoDB using the internal service name `mongo`.
+
+MongoDB is not published directly to the host.
+
+## Current Configuration Notes
+
+1. The application is configured for local Docker based testing.
+2. The frontend is available at `http://localhost:8080`.
+3. The current Compose configuration does not include Stripe payment credentials.
+4. Production deployment would require additional security, payment verification, HTTPS, and deployment configuration.
+
+## Repository
+
+GitHub: https://github.com/msaeedkhan40/mern-ecommerce-devops
+
+## License
+
+See the [LICENSE](LICENSE) file for license information.
